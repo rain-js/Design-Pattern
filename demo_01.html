@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+</head>
+<body>
+	<script>
+		// 发布订阅模式
+		var corp = {
+			list: [],
+
+			on: function(key, fn) {
+				if (!this.list[key]) {
+					this.list[key] = []
+				}
+				this.list[key].push(fn)
+			},
+
+			emit: function() {
+				let key = [].shift.call(arguments)
+				let fns = this.list[key]
+
+				if(!fns) {
+					return false
+				}
+				fns.forEach((cb) => {
+					cb.apply(this, arguments)
+				})
+			}
+		}
+
+
+		corp.on('job', function(position, salary) {
+			console.log(`
+				职位: ${position} 工资: ${salary}
+			`)
+		})
+
+		corp.on('other', function(skill, hobby) {
+			console.log(`
+				技能: ${skill} 爱好: ${hobby}
+			`)
+		})	
+
+		corp.emit('job', '前端', 12000)
+		corp.emit('job', '后端', 15000)
+		corp.emit('other', 'Web 开发', '打羽毛球')
+	</script>
+</body>
+</html>
